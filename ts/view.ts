@@ -11,6 +11,8 @@ export class View
     private cube?: Three.Mesh;
     private floor?: Three.Mesh;
 
+    private cameraTarget: Three.Vector3 = new Three.Vector3(0, 0, 0);
+
     constructor(c : HTMLCanvasElement)
     {
         this.renderer = new Three.WebGLRenderer({canvas: c, antialias: true});
@@ -22,6 +24,7 @@ export class View
         this.addFloor();
         this.addAmbientLight();
         this.addSpotLight();
+        this.initEventListeners(c);
         this.render();
     }
 
@@ -30,6 +33,7 @@ export class View
         if (this.cube) {
             this.cube.rotation.y += 0.01;
         }
+        this.camera.lookAt(this.cameraTarget);
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(() => this.render());
     }
@@ -98,5 +102,53 @@ export class View
         });
     }
 
-}
+    private initEventListeners(canvas: HTMLCanvasElement)
+    {
+        canvas.tabIndex = 1;
+        canvas.style.outline = "none";
+        canvas.addEventListener('wheel', (event: WheelEvent) => {
+            this.camera.position.z += event.deltaY * 0.05;
+            if (this.camera.position.z < 5) 
+                this.camera.position.z = 5;
+            if (this.camera.position.z > 500) 
+                this.camera.position.z = 500;
+        });
 
+        canvas.addEventListener('mousemove', (event: MouseEvent) => {
+            const rect = canvas.getBoundingClientRect();
+            const width = rect.width;
+            const height = rect.height;
+            const mouseX = ((event.clientX - rect.left) / width)*2-1;
+            const mouseY = -((event.clientY - rect.top) / height)*2+1;
+            this.cameraTarget.x = mouseX * 20;
+            this.cameraTarget.y = mouseY * 20;
+        });
+
+        canvas.addEventListener('keydown', (event: KeyboardEvent) => {
+            const step = 1.0;
+
+            switch (event.key) {
+                case 'ArrowUp':
+                case 'z':
+                case 'Z':
+                    this.camera.position.y += step;
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    this.camera.position.y -= step;
+                    break;
+                case 'ArrowLeft':
+                case 'q':
+                case 'Q':
+                    this.camera.position.x -= step;
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    this.camera.position.x += step;
+                    break;
+            }
+        });
+    }
+}
