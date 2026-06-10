@@ -13,7 +13,7 @@ export class View
 
     constructor(c : HTMLCanvasElement)
     {
-        this.renderer = new Three.WebGLRenderer({canvas: c});
+        this.renderer = new Three.WebGLRenderer({canvas: c, antialias: true});
         this.renderer.shadowMap.enabled = true;
         this.scene = new Three.Scene();
         this.camera = new Three.PerspectiveCamera(60, c.width / c.height, 1, 10000);
@@ -23,7 +23,6 @@ export class View
         this.addAmbientLight();
         this.addSpotLight();
         this.render();
-
     }
 
     public render()
@@ -39,16 +38,24 @@ export class View
     {
         let loader = new Three.TextureLoader();
         loader.load("img/crate.jpg", (texture) => {
-            let geom = new Three.BoxGeometry(10, 10, 10);
-            let matos = new Three.MeshPhongMaterial({map: texture});
-            this.cube = new Three.Mesh(geom, matos);
-            this.cube.position.x = 0 ;
-            this.cube.position.y = 0 ;
-            this.cube.position.z = 0 ;
-            this.cube.rotation.x = 0.5 ;
-            this.cube.rotation.y = 0.5 ;
-            this.cube.castShadow = true;
-            this.scene.add(this.cube);
+            texture.anisotropy = 16;
+            
+            loader.load("img/crate-relief.jpg", (bumpTexture) => {
+                bumpTexture.anisotropy = 16;
+                
+                let geom = new Three.BoxGeometry(10, 10, 10);
+                let matos = new Three.MeshPhongMaterial({
+                    map: texture,
+                    bumpMap: bumpTexture,
+                    bumpScale: 0.3
+                });
+                
+                this.cube = new Three.Mesh(geom, matos);
+                this.cube.position.set(0, 0, 0);
+                this.cube.rotation.set(0.5, 0.5, 0);
+                this.cube.castShadow = true;
+                this.scene.add(this.cube);
+            });
         });
     }
     
@@ -61,22 +68,33 @@ export class View
 
     public addSpotLight()
     {
-        let light = new Three.SpotLight("#ffffff", 1000);
+        let light = new Three.SpotLight("#ffffff", 3000, 100);
         light.position.set(20, 20, 20);
         light.castShadow = true;
         this.scene.add(light);
     }
-
+    
     public addFloor()
     {
-        let loader = new Three.TextureLoader();
+        let loader = new Three.TextureLoader(); 
         loader.load("img/floor.jpg", (texture) => {
-            let geom = new Three.BoxGeometry(80, 1, 80);
-            let matos = new Three.MeshPhongMaterial({map: texture});
-            this.floor = new Three.Mesh(geom, matos);
-            this.floor.position.y = -10;
-            this.floor.receiveShadow = true;
-            this.scene.add(this.floor);
+            texture.anisotropy = 16;
+            
+            loader.load("img/floor-relief.jpg", (bumpTexture) => {
+                bumpTexture.anisotropy = 16;
+                
+                let geom = new Three.BoxGeometry(80, 1, 80);
+                let matos = new Three.MeshPhongMaterial({
+                    map: texture,
+                    bumpMap: bumpTexture,
+                    bumpScale: 0.3
+                });
+                
+                this.floor = new Three.Mesh(geom, matos);
+                this.floor.position.y = -10;
+                this.floor.receiveShadow = true;
+                this.scene.add(this.floor);
+            });
         });
     }
 
