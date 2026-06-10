@@ -1,0 +1,4 @@
+Le processeur travaille très peu car la carte graphique s'occupe de tous les calculs 3D. Il y a environ 16 millisecondes entre chaque image
+
+
+Une valeur de 0.3 donne un relief réaliste sur le cube et le sol sans créer de déformations bizarres. L'activation de l'anti-crénelage et du filtre anisotrope ne demande aucune puissance supplémentaire au processeur de l'ordinateur car la carte graphique gère tout.  
