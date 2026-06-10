@@ -8,7 +8,8 @@ export class View
     private renderer: Three.WebGLRenderer;
     private scene: Three.Scene; 
     private camera:  Three.PerspectiveCamera;
-    
+    private cube!: Three.Mesh;
+
     constructor(c : HTMLCanvasElement)
     {
         this.renderer = new Three.WebGLRenderer({canvas: c});
@@ -24,20 +25,22 @@ export class View
 
     public render()
     {
+        this.cube.rotation.y += 0.01;
         this.renderer.render(this.scene, this.camera);
+        requestAnimationFrame(() => this.render());
     }
 
     public addCube()
     {
         let geom = new Three.BoxGeometry(10, 10, 10);
         let matos = new Three.MeshPhongMaterial({color: "#2bfb4e"});
-        let obj = new Three.Mesh(geom, matos);
-        obj.position.x = 0 ;
-        obj.position.y = 0 ;
-        obj.position.z = 0 ;
-        obj.rotation.x = 0.5 ;
-        obj.rotation.y = 0.5 ;
-        this.scene.add(obj);
+        this.cube = new Three.Mesh(geom, matos);
+        this.cube.position.x = 0 ;
+        this.cube.position.y = 0 ;
+        this.cube.position.z = 0 ;
+        this.cube.rotation.x = 0.5 ;
+        this.cube.rotation.y = 0.5 ;
+        this.scene.add(this.cube);
     }  
     
     public addAmbientLight()
@@ -48,9 +51,8 @@ export class View
 
     public addSpotLight()
     {
-        let light = new Three.SpotLight("#ffffff", 1);
+        let light = new Three.SpotLight("#ffffff", 1000);
         light.position.set(20, 20, 20);
-        light.decay = 0.1;
         this.scene.add(light);
     }
 
