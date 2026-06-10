@@ -13,6 +13,7 @@ export class View
     constructor(c : HTMLCanvasElement)
     {
         this.renderer = new Three.WebGLRenderer({canvas: c});
+        this.renderer.shadowMap.enabled = true;
         this.scene = new Three.Scene();
         this.camera = new Three.PerspectiveCamera(60, c.width / c.height, 1, 10000);
         this.camera.position.set(0, 0, 30);
@@ -41,12 +42,14 @@ export class View
         this.cube.position.z = 0 ;
         this.cube.rotation.x = 0.5 ;
         this.cube.rotation.y = 0.5 ;
+        this.cube.castShadow = true;
         this.scene.add(this.cube);
     }  
     
     public addAmbientLight()
     {
         let light = new Three.AmbientLight("#ffffff", 0.3);
+        light.castShadow = true;
         this.scene.add(light);
     }
 
@@ -54,6 +57,7 @@ export class View
     {
         let light = new Three.SpotLight("#ffffff", 1000);
         light.position.set(20, 20, 20);
+        light.castShadow = true;
         this.scene.add(light);
     }
 
@@ -63,6 +67,7 @@ export class View
         let matos = new Three.MeshPhongMaterial({color: "#0000ff"});
         let floor = new Three.Mesh(geom, matos);
         floor.position.y = -10;
+        floor.receiveShadow = true;
         this.scene.add(floor);
     }
 
