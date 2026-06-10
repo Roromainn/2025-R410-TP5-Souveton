@@ -11,5 +11,6 @@ export declare class View {
     addCube(): void;
     addAmbientLight(): void;
     addSpotLight(): void;
+    addFloor(): void;
 }
 //# sourceMappingURL=view.d.ts.map

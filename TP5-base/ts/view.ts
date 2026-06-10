@@ -17,6 +17,7 @@ export class View
         this.camera = new Three.PerspectiveCamera(60, c.width / c.height, 1, 10000);
         this.camera.position.set(0, 0, 30);
         this.addCube();
+        this.addFloor();
         this.addAmbientLight();
         this.addSpotLight();
         this.render();
@@ -54,6 +55,15 @@ export class View
         let light = new Three.SpotLight("#ffffff", 1000);
         light.position.set(20, 20, 20);
         this.scene.add(light);
+    }
+
+    public addFloor()
+    {
+        let geom = new Three.BoxGeometry(80, 1, 80);
+        let matos = new Three.MeshPhongMaterial({color: "#0000ff"});
+        let floor = new Three.Mesh(geom, matos);
+        floor.position.y = -10;
+        this.scene.add(floor);
     }
 
 
