@@ -5,7 +5,8 @@ export declare class View {
     private renderer;
     private scene;
     private camera;
-    private cube;
+    private cube?;
+    private floor?;
     constructor(c: HTMLCanvasElement);
     render(): void;
     addCube(): void;
